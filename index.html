@@ -1,164 +1,110 @@
-import React from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snyk + Snowflake Cortex Integration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Snyk Brand Colors as CSS variables */
+        :root {
+            --snyk-background: #171520;
+            --snyk-card: #282538;
+            --snyk-border: rgba(255, 255, 255, 0.1);
+            --snyk-purple: #9F75FF;
+            --snyk-teal: #0DD3C5;
+            --snyk-pink: #D555E5;
+            --snyk-text-primary: #FFFFFF;
+            --snyk-text-secondary: #A9A8B3;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--snyk-background);
+            color: var(--snyk-text-primary);
+        }
+    </style>
+</head>
+<body class="relative min-h-screen">
 
-// Main App component
-export default function App() {
-  // Partner name is specific to Snowflake Cortex
-  const partnerName = 'Snowflake Cortex';
+    <!-- Background decorative gradients -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden" style="z-index: 0;">
+        <div class="absolute top-[-20%] left-[-20%] w-96 h-96 rounded-full" style="background: radial-gradient(circle, rgba(213, 85, 229, 0.1), transparent 70%);"></div>
+        <div class="absolute bottom-[-20%] right-[-20%] w-96 h-96 rounded-full" style="background: radial-gradient(circle, rgba(15, 211, 197, 0.1), transparent 70%);"></div>
+    </div>
 
-  // Snyk brand colors
-  const snykColors = {
-    background: '#171520', // Snyk's primary dark background
-    card: '#282538',       // A lighter background for cards
-    border: 'rgba(255, 255, 255, 0.1)',
-    purple: '#9F75FF',     // Snyk's primary purple
-    teal: '#0DD3C5',       // Snyk's teal/cyan
-    pink: '#D555E5',       // Snyk's pink/magenta
-    textPrimary: '#FFFFFF',
-    textSecondary: '#A9A8B3', // A light gray for secondary text
-  };
-
-  return (
-    <div
-      className="min-h-screen font-sans relative"
-      style={{
-        backgroundColor: snykColors.background,
-        color: snykColors.textPrimary,
-      }}
-    >
-      {/* Background decorative gradients */}
-      <div
-        className="absolute top-0 left-0 w-full h-full overflow-hidden"
-        style={{ zIndex: 0 }}
-      >
-        <div
-          className="absolute top-[-20%] left-[-20%] w-96 h-96 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(213, 85, 229, 0.1), transparent 70%)',
-          }}
-        ></div>
-        <div
-          className="absolute bottom-[-20%] right-[-20%] w-96 h-96 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(15, 211, 197, 0.1), transparent 70%)',
-          }}
-        ></div>
-      </div>
-      
-      <div className="relative" style={{ zIndex: 1 }}>
-        {/* Header */}
-        <header
-          className="py-4 px-8 border-b"
-          style={{ borderColor: snykColors.border }}
-        >
-          <h1 className="text-2xl font-bold">
-            <span style={{ color: snykColors.purple }}>Snyk</span> + {partnerName}
-          </h1>
+    <div class="relative" style="z-index: 1;">
+        <!-- Header -->
+        <header class="py-4 px-8 border-b" style="border-color: var(--snyk-border);">
+            <h1 class="text-2xl font-bold">
+                <span style="color: var(--snyk-purple);">Snyk</span> + Snowflake Cortex
+            </h1>
         </header>
 
-        {/* Main Content */}
-        <main className="container mx-auto px-8 py-12">
-          {/* Introduction */}
-          <section className="text-center mb-20">
-            <h2 className="text-5xl font-bold mb-4">
-              Secure Your AI with Snyk and {partnerName}
-            </h2>
-            <p
-              className="text-lg max-w-3xl mx-auto"
-              style={{ color: snykColors.textSecondary }}
-            >
-              Integrate Snyk's AI Trust Platform directly with {partnerName} to build, deploy, and manage secure AI applications at scale, all within your Snowflake environment.
-            </p>
-          </section>
+        <!-- Main Content -->
+        <main class="container mx-auto px-8 py-12">
+            <!-- Introduction -->
+            <section class="text-center mb-20">
+                <h2 class="text-5xl font-bold mb-4">
+                    Secure Your AI with Snyk and Snowflake Cortex
+                </h2>
+                <p class="text-lg max-w-3xl mx-auto" style="color: var(--snyk-text-secondary);">
+                    Integrate Snyk's AI Trust Platform directly with Snowflake Cortex to build, deploy, and manage secure AI applications at scale, all within your Snowflake environment.
+                </p>
+            </section>
 
-          {/* Benefits Section */}
-          <section className="mb-20">
-            <h3 className="text-4xl font-bold text-center mb-10">
-              Why Integrate?
-            </h3>
-            <div className="grid md:grid-cols-3 gap-8">
-              {/* Card Base Style */}
-              {[
-                {
-                  title: 'For Developers',
-                  color: snykColors.purple,
-                  description: 'Secure your AI models and applications from the start. Find and fix vulnerabilities in your notebooks, custom code, model dependencies, and the container images you use to run them.',
-                },
-                {
-                  title: 'For AppSec Engineers',
-                  color: snykColors.teal,
-                  description: 'Gain unprecedented visibility into the security of your AI/ML assets. Automate security scanning within your Cortex pipelines and secure the entire supply chain of your models.',
-                },
-                {
-                  title: 'For CISOs',
-                  color: snykColors.pink,
-                  description: 'Confidently govern and manage the risks of AI adoption. Get a unified view of security across your applications and AI models to protect your most critical data and IP within Snowflake.',
-                },
-              ].map((card, index) => (
-                <div
-                  key={index}
-                  className="p-8 rounded-lg"
-                  style={{
-                    backgroundColor: snykColors.card,
-                    borderTop: `2px solid ${card.color}`,
-                  }}
-                >
-                  <h4
-                    className="text-2xl font-bold mb-4"
-                    style={{ color: card.color }}
-                  >
-                    {card.title}
-                  </h4>
-                  <p style={{ color: snykColors.textSecondary }}>{card.description}</p>
+            <!-- Benefits Section -->
+            <section class="mb-20">
+                <h3 class="text-4xl font-bold text-center mb-10">
+                    Why Integrate?
+                </h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Developer Card -->
+                    <div class="p-8 rounded-lg" style="background-color: var(--snyk-card); border-top: 2px solid var(--snyk-purple);">
+                        <h4 class="text-2xl font-bold mb-4" style="color: var(--snyk-purple);">For Developers</h4>
+                        <p style="color: var(--snyk-text-secondary);">Secure your AI models and applications from the start. Find and fix vulnerabilities in your notebooks, custom code, model dependencies, and the container images you use to run them.</p>
+                    </div>
+                    <!-- AppSec Engineer Card -->
+                    <div class="p-8 rounded-lg" style="background-color: var(--snyk-card); border-top: 2px solid var(--snyk-teal);">
+                        <h4 class="text-2xl font-bold mb-4" style="color: var(--snyk-teal);">For AppSec Engineers</h4>
+                        <p style="color: var(--snyk-text-secondary);">Gain unprecedented visibility into the security of your AI/ML assets. Automate security scanning within your Cortex pipelines and secure the entire supply chain of your models.</p>
+                    </div>
+                    <!-- CISO Card -->
+                    <div class="p-8 rounded-lg" style="background-color: var(--snyk-card); border-top: 2px solid var(--snyk-pink);">
+                        <h4 class="text-2xl font-bold mb-4" style="color: var(--snyk-pink);">For CISOs</h4>
+                        <p style="color: var(--snyk-text-secondary);">Confidently govern and manage the risks of AI adoption. Get a unified view of security across your applications and AI models to protect your most critical data and IP within Snowflake.</p>
+                    </div>
                 </div>
-              ))}
-            </div>
-          </section>
+            </section>
 
-          {/* Setup Section */}
-          <section className="mb-20">
-            <h3 className="text-4xl font-bold text-center mb-10">
-              Integration Setup
-            </h3>
-            <div
-              className="max-w-3xl mx-auto p-8 rounded-lg"
-              style={{ backgroundColor: snykColors.card }}
-            >
-              <ol className="list-decimal list-inside space-y-6 text-lg">
-                {[
-                  `In Snyk, connect to your source code repository (e.g., GitHub) where your Cortex project code and notebooks reside.`,
-                  `Import the repositories containing your ${partnerName} applications, functions, and models.`,
-                  `Configure Snyk to scan your Python code, dependencies (requirements.txt), and container base images for vulnerabilities.`,
-                  `View security results and actionable fixes directly in Snyk to secure your AI applications before deployment.`
-                ].map((step, index) => (
-                   <li key={index} style={{ color: snykColors.textSecondary }}>
-                     <span style={{ color: snykColors.textPrimary }}>{step}</span>
-                   </li>
-                ))}
-              </ol>
-            </div>
-          </section>
+            <!-- Setup Section -->
+            <section class="mb-20">
+                <h3 class="text-4xl font-bold text-center mb-10">
+                    Integration Setup
+                </h3>
+                <div class="max-w-3xl mx-auto p-8 rounded-lg" style="background-color: var(--snyk-card);">
+                    <ol class="list-decimal list-inside space-y-6 text-lg">
+                        <li style="color: var(--snyk-text-secondary);"><span style="color: var(--snyk-text-primary);">In Snyk, connect to your source code repository (e.g., GitHub) where your Cortex project code and notebooks reside.</span></li>
+                        <li style="color: var(--snyk-text-secondary);"><span style="color: var(--snyk-text-primary);">Import the repositories containing your Snowflake Cortex applications, functions, and models.</span></li>
+                        <li style="color: var(--snyk-text-secondary);"><span style="color: var(--snyk-text-primary);">Configure Snyk to scan your Python code, dependencies (requirements.txt), and container base images for vulnerabilities.</span></li>
+                        <li style="color: var(--snyk-text-secondary);"><span style="color: var(--snyk-text-primary);">View security results and actionable fixes directly in Snyk to secure your AI applications before deployment.</span></li>
+                    </ol>
+                </div>
+            </section>
 
-          {/* Call to Action */}
-          <section className="text-center">
-            <h3 className="text-4xl font-bold mb-4">Ready to Build Secure AI?</h3>
-            <p
-              className="text-lg mb-8"
-              style={{ color: snykColors.textSecondary }}
-            >
-              Start securing your AI innovation today with Snyk and {partnerName}.
-            </p>
-            <button
-              className="font-bold py-3 px-8 rounded-md text-lg transition-transform transform hover:scale-105"
-              style={{
-                background: `linear-gradient(to right, ${snykColors.pink}, ${snykColors.purple})`,
-                color: snykColors.textPrimary,
-              }}
-            >
-              Request a Demo
-            </button>
-          </section>
+            <!-- Call to Action -->
+            <section class="text-center">
+                <h3 class="text-4xl font-bold mb-4">Ready to Build Secure AI?</h3>
+                <p class="text-lg mb-8" style="color: var(--snyk-text-secondary);">
+                    Start securing your AI innovation today with Snyk and Snowflake Cortex.
+                </p>
+                <button class="font-bold py-3 px-8 rounded-md text-lg transition-transform transform hover:scale-105" style="background: linear-gradient(to right, var(--snyk-pink), var(--snyk-purple)); color: var(--snyk-text-primary);">
+                    Request a Demo
+                </button>
+            </section>
         </main>
-      </div>
     </div>
-  );
-}
+</body>
+</html>
