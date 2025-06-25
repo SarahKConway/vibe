@@ -1,0 +1,300 @@
+import React, { useState } from 'react';
+
+// Main App component
+export default function App() {
+  // Partner name is specific to Snowflake Cortex
+  const partnerName = 'Snowflake Cortex';
+
+  // State for AI-powered features
+  const [techStack, setTechStack] = useState('');
+  const [customSteps, setCustomSteps] = useState('');
+  const [executiveSummary, setExecutiveSummary] = useState('');
+  const [isLoadingSteps, setIsLoadingSteps] = useState(false);
+  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
+
+  // Snyk brand colors
+  const snykColors = {
+    background: '#171520', // Snyk's primary dark background
+    card: '#282538',       // A lighter background for cards
+    border: 'rgba(255, 255, 255, 0.1)',
+    purple: '#9F75FF',     // Snyk's primary purple
+    teal: '#0DD3C5',       // Snyk's teal/cyan
+    pink: '#D555E5',       // Snyk's pink/magenta
+    textPrimary: '#FFFFFF',
+    textSecondary: '#A9A8B3', // A light gray for secondary text
+  };
+
+  // --- Gemini API Call Functions ---
+
+  // Function to generate custom integration steps
+  const generateCustomIntegrationSteps = async () => {
+    if (!techStack) {
+      alert("Please describe your tech stack first.");
+      return;
+    }
+    setIsLoadingSteps(true);
+    setCustomSteps('');
+
+    const prompt = `Based on the standard integration steps for Snyk and Snowflake Cortex, create a custom, step-by-step integration plan for a user with the following tech stack: "${techStack}". The standard steps are: 1. In Snyk, connect to your source code repository. 2. Import repositories with Cortex applications. 3. Configure Snyk to scan code, dependencies, and containers. 4. View results in Snyk. Focus on providing specific advice related to their stack. Format the output as a numbered list.`;
+
+    try {
+        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+        const payload = { contents: chatHistory };
+        const apiKey = ""; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
+            setCustomSteps(result.candidates[0].content.parts[0].text);
+        } else {
+            setCustomSteps('Sorry, we could not generate custom steps at this time. Please try again.');
+        }
+    } catch (error) {
+        console.error("Error generating custom steps:", error);
+        setCustomSteps('An error occurred while generating the steps. Please check the console for details.');
+    } finally {
+        setIsLoadingSteps(false);
+    }
+  };
+
+  // Function to generate the CISO executive summary
+  const generateCisoSummary = async () => {
+    setIsLoadingSummary(true);
+    setExecutiveSummary('');
+    setShowSummaryModal(true);
+
+    const prompt = `Write a concise, professional executive summary for a Chief Information Security Officer (CISO). The summary should explain the business value, risk reduction, and potential ROI of integrating Snyk with Snowflake Cortex. Use the following points: Snyk provides visibility into AI/ML asset security, automates security in Cortex pipelines, secures the entire model supply chain, and helps govern AI adoption risks. The goal is to protect critical data and IP within Snowflake. The tone should be formal and persuasive.`;
+    
+    try {
+        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+        const payload = { contents: chatHistory };
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
+            setExecutiveSummary(result.candidates[0].content.parts[0].text);
+        } else {
+             setExecutiveSummary('Sorry, we could not generate the summary at this time. Please try again.');
+        }
+    } catch (error) {
+        console.error("Error generating summary:", error);
+        setExecutiveSummary('An error occurred while generating the summary. Please check the console for details.');
+    } finally {
+        setIsLoadingSummary(false);
+    }
+  };
+  
+  // --- UI Components ---
+  
+  const CisoSummaryModal = () => {
+    if (!showSummaryModal) return null;
+
+    const copyToClipboard = () => {
+        const textarea = document.createElement('textarea');
+        textarea.value = executiveSummary;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            alert('Summary copied to clipboard!');
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            alert('Failed to copy text.');
+        }
+        document.body.removeChild(textarea);
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
+            <div className="p-8 rounded-lg w-full max-w-2xl" style={{ backgroundColor: snykColors.card, border: `1px solid ${snykColors.border}` }}>
+                <h4 className="text-2xl font-bold mb-4" style={{ color: snykColors.pink }}>Executive Summary</h4>
+                {isLoadingSummary ? (
+                     <div className="flex justify-center items-center h-48">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2" style={{borderColor: snykColors.pink}}></div>
+                    </div>
+                ) : (
+                    <div className="whitespace-pre-wrap text-left" style={{ color: snykColors.textSecondary }}>{executiveSummary}</div>
+                )}
+                <div className="flex justify-end mt-6 gap-4">
+                     {!isLoadingSummary && (
+                        <button onClick={copyToClipboard} className="font-bold py-2 px-6 rounded-md" style={{ background: snykColors.purple, color: snykColors.textPrimary }}>Copy</button>
+                    )}
+                    <button onClick={() => setShowSummaryModal(false)} className="font-bold py-2 px-6 rounded-md" style={{ background: snykColors.textSecondary, color: snykColors.background }}>Close</button>
+                </div>
+            </div>
+        </div>
+    );
+  };
+
+
+  return (
+    <div
+      className="min-h-screen font-sans relative"
+      style={{
+        backgroundColor: snykColors.background,
+        color: snykColors.textPrimary,
+      }}
+    >
+       {/* Background decorative gradients */}
+       <div
+        className="absolute top-0 left-0 w-full h-full overflow-hidden"
+        style={{ zIndex: 0 }}
+      >
+        <div
+          className="absolute top-[-20%] left-[-20%] w-96 h-96 rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(213, 85, 229, 0.1), transparent 70%)',
+          }}
+        ></div>
+        <div
+          className="absolute bottom-[-20%] right-[-20%] w-96 h-96 rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(15, 211, 197, 0.1), transparent 70%)',
+          }}
+        ></div>
+      </div>
+      
+      <div className="relative" style={{ zIndex: 1 }}>
+        <CisoSummaryModal />
+        {/* Header */}
+        <header
+          className="py-4 px-8 border-b"
+          style={{ borderColor: snykColors.border }}
+        >
+          <h1 className="text-2xl font-bold">
+            <span style={{ color: snykColors.purple }}>Snyk</span> + {partnerName}
+          </h1>
+        </header>
+
+        {/* Main Content */}
+        <main className="container mx-auto px-8 py-12">
+          {/* Introduction */}
+          <section className="text-center mb-20">
+            <h2 className="text-5xl font-bold mb-4">
+              Secure Your AI with Snyk and {partnerName}
+            </h2>
+            <p
+              className="text-lg max-w-3xl mx-auto"
+              style={{ color: snykColors.textSecondary }}
+            >
+              Integrate Snyk's AI Trust Platform directly with {partnerName} to build, deploy, and manage secure AI applications at scale.
+            </p>
+          </section>
+
+          {/* Benefits Section */}
+          <section className="mb-20">
+            <h3 className="text-4xl font-bold text-center mb-10">
+              Why Integrate?
+            </h3>
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Developer Card */}
+              <div className="p-8 rounded-lg" style={{ backgroundColor: snykColors.card, borderTop: `2px solid ${snykColors.purple}` }}>
+                  <h4 className="text-2xl font-bold mb-4" style={{ color: snykColors.purple }}>For Developers</h4>
+                  <p style={{ color: snykColors.textSecondary }}>Secure your AI models and applications from the start. Find and fix vulnerabilities in your notebooks, custom code, model dependencies, and the container images you use to run them.</p>
+              </div>
+
+              {/* AppSec Card */}
+               <div className="p-8 rounded-lg" style={{ backgroundColor: snykColors.card, borderTop: `2px solid ${snykColors.teal}` }}>
+                  <h4 className="text-2xl font-bold mb-4" style={{ color: snykColors.teal }}>For AppSec Engineers</h4>
+                  <p style={{ color: snykColors.textSecondary }}>Gain unprecedented visibility into the security of your AI/ML assets. Automate security scanning within your Cortex pipelines and secure the entire supply chain of your models.</p>
+              </div>
+              
+              {/* CISO Card */}
+               <div className="p-8 rounded-lg flex flex-col justify-between" style={{ backgroundColor: snykColors.card, borderTop: `2px solid ${snykColors.pink}` }}>
+                  <div>
+                    <h4 className="text-2xl font-bold mb-4" style={{ color: snykColors.pink }}>For CISOs</h4>
+                    <p style={{ color: snykColors.textSecondary }}>Confidently govern and manage the risks of AI adoption. Get a unified view of security across your applications and AI models to protect your most critical data and IP within Snowflake.</p>
+                  </div>
+                  <button onClick={generateCisoSummary} disabled={isLoadingSummary} className="font-bold py-2 px-4 rounded-md text-sm mt-6 w-full" style={{ background: snykColors.pink, color: snykColors.textPrimary }}>
+                    ✨ Draft Executive Summary
+                  </button>
+              </div>
+            </div>
+          </section>
+
+          {/* AI-Powered Insights Section */}
+          <section className="mb-20">
+            <h3 className="text-4xl font-bold text-center mb-10">
+             ✨ AI-Powered Security Insights
+            </h3>
+             <div className="max-w-3xl mx-auto p-8 rounded-lg" style={{ backgroundColor: snykColors.card }}>
+                 <label htmlFor="techStack" className="text-lg font-bold mb-2 block" style={{color: snykColors.purple}}>Describe your development environment:</label>
+                 <textarea
+                    id="techStack"
+                    rows="3"
+                    value={techStack}
+                    onChange={(e) => setTechStack(e.target.value)}
+                    placeholder="e.g., We use GitHub for source control, Jenkins for CI/CD, and deploy our Cortex models as secure UDFs..."
+                    className="w-full p-3 rounded-md border text-base"
+                    style={{ backgroundColor: snykColors.background, borderColor: snykColors.border, color: snykColors.textSecondary }}
+                 ></textarea>
+                 <button onClick={generateCustomIntegrationSteps} disabled={isLoadingSteps} className="font-bold py-3 px-8 rounded-md text-lg mt-4 w-full transition-transform transform hover:scale-105" style={{ background: `linear-gradient(to right, ${snykColors.teal}, ${snykColors.purple})`}}>
+                    {isLoadingSteps ? 'Generating...' : 'Generate My Integration Steps'}
+                 </button>
+                 {customSteps && (
+                     <div className="mt-6 p-4 rounded-md border" style={{ borderColor: snykColors.border, backgroundColor: snykColors.background }}>
+                        <h4 className="font-bold text-xl mb-2" style={{color: snykColors.teal}}>Your Custom Plan:</h4>
+                        <div className="whitespace-pre-wrap" style={{color: snykColors.textSecondary}}>{customSteps}</div>
+                     </div>
+                 )}
+            </div>
+          </section>
+
+          {/* Setup Section */}
+          <section className="mb-20">
+            <h3 className="text-4xl font-bold text-center mb-10">
+              Standard Integration Setup
+            </h3>
+            <div
+              className="max-w-3xl mx-auto p-8 rounded-lg"
+              style={{ backgroundColor: snykColors.card }}
+            >
+              <ol className="list-decimal list-inside space-y-6 text-lg">
+                {[
+                  `In Snyk, connect to your source code repository (e.g., GitHub) where your Cortex project code and notebooks reside.`,
+                  `Import the repositories containing your ${partnerName} applications, functions, and models.`,
+                  `Configure Snyk to scan your Python code, dependencies (requirements.txt), and container base images for vulnerabilities.`,
+                  `View security results and actionable fixes directly in Snyk to secure your AI applications before deployment.`
+                ].map((step, index) => (
+                   <li key={index} style={{ color: snykColors.textSecondary }}>
+                     <span style={{ color: snykColors.textPrimary }}>{step}</span>
+                   </li>
+                ))}
+              </ol>
+            </div>
+          </section>
+
+          {/* Call to Action */}
+          <section className="text-center">
+            <h3 className="text-4xl font-bold mb-4">Ready to Build Secure AI?</h3>
+            <p
+              className="text-lg mb-8"
+              style={{ color: snykColors.textSecondary }}
+            >
+              Start securing your AI innovation today with Snyk and {partnerName}.
+            </p>
+            <button
+              className="font-bold py-3 px-8 rounded-md text-lg transition-transform transform hover:scale-105"
+              style={{
+                background: `linear-gradient(to right, ${snykColors.pink}, ${snykColors.purple})`,
+                color: snykColors.textPrimary,
+              }}
+            >
+              Request a Demo
+            </button>
+          </section>
+        </main>
+      </div>
+    </div>
+  );
+}
